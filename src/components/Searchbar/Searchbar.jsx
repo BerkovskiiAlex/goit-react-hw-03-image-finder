@@ -1,9 +1,15 @@
 import React from 'react';
 
-export const Searchbar = () => {
+export const Searchbar = ({ onSetSearch }) => {
+  const onSubmit = e => {
+    e.preventDefault();
+    const query = e.target.query.value;
+    onSetSearch(query);
+    e.target.query.value = '';
+  };
   return (
     <header className="searchbar">
-      <form className="form">
+      <form className="form" onSubmit={onSubmit}>
         <button type="submit" className="button">
           <span className="button-label">Search</span>
         </button>
@@ -14,6 +20,7 @@ export const Searchbar = () => {
           autoComplete="off"
           autoFocus
           placeholder="Search images and photos"
+          name="query"
         />
       </form>
     </header>

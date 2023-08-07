@@ -1,7 +1,19 @@
 import React from 'react';
 
-export const ImageGalleryItem = () => {
-  return <div>ImageGalleryItem</div>;
+export const ImageGalleryItem = ({ images }) => {
+  return (
+    <>
+      {images.length === 0 ? (
+        <p>Nothing found for your request</p>
+      ) : (
+        images.map(img => (
+          <li className="gallery-item" key={img.id}>
+            <img src={img.webformatURL} alt={img.largeImageURL} />
+          </li>
+        ))
+      )}
+    </>
+  );
 };
 
 // .ImageGalleryItem {

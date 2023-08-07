@@ -10,7 +10,7 @@ import { fetchImg } from '../service/api';
 
 export class App extends React.Component {
   state = {
-    q: 'cat',
+    q: '',
     page: 1,
     images: [],
   };
@@ -24,16 +24,39 @@ export class App extends React.Component {
       });
 
       this.setState({ images });
-      console.log(this.state);
     } catch (error) {}
   }
+
+  async componentDidUpdate(prevProps, prevState) {
+    const { q, page } = this.state;
+    if (q === '') {
+      return;
+    }
+    if (prevState.q !== q) {
+      try {
+        const images = await fetchImg({
+          q,
+          page,
+        });
+
+        this.setState({ images });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  handleSetSearch = query => {
+    this.setState({ q: query });
+  };
 
   render() {
     return (
       <section>
-        <Searchbar />
-        <ImageGallery />
-        <ImageGalleryItem />
+        <Searchbar onSetSearch={this.handleSetSearch} />
+        <ImageGallery>
+          <ImageGalleryItem images={this.state.images} />
+        </ImageGallery>
         <Loader />
         <Button />
         <Modal />
