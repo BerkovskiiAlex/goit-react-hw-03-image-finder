@@ -12,34 +12,71 @@ export class App extends React.Component {
   state = {
     q: '',
     page: 1,
+    per_page: 12,
     images: [],
+    disabled: false,
   };
 
   async componentDidMount() {
-    const { q, page } = this.state;
+    const { q, page, per_page } = this.state;
     try {
-      const images = await fetchImg({
+      const data = await fetchImg({
         q,
         page,
+        per_page,
       });
+      if (data.totalHits > this.state.images.length) {
+        this.setState({ disabled: false });
+      } else {
+        this.setState({ disabled: true });
+      }
 
-      this.setState({ images });
+      console.log(this.state.disabled);
+      const { hits } = data;
+      this.setState({ images: hits });
     } catch (error) {}
   }
 
   async componentDidUpdate(prevProps, prevState) {
-    const { q, page } = this.state;
+    const { q, page, per_page } = this.state;
     if (q === '') {
       return;
     }
     if (prevState.q !== q) {
       try {
-        const images = await fetchImg({
+        this.setState({ per_page: 12 });
+        const data = await fetchImg({
           q,
           page,
+          per_page,
         });
+        if (data.totalHits > this.state.images.length) {
+          this.setState({ disabled: false });
+        } else {
+          this.setState({ disabled: true });
+        }
 
-        this.setState({ images });
+        const { hits } = data;
+        this.setState({ images: hits });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (prevState.per_page !== per_page) {
+      try {
+        const data = await fetchImg({
+          q,
+          page,
+          per_page,
+        });
+        if (data.totalHits > this.state.images.length) {
+          this.setState({ disabled: false });
+        } else {
+          this.setState({ disabled: true });
+        }
+
+        const { hits } = data;
+        this.setState({ images: hits });
       } catch (error) {
         console.log(error);
       }
@@ -50,6 +87,11 @@ export class App extends React.Component {
     this.setState({ q: query });
   };
 
+  handleLoadMore = () => {
+    this.setState(prev => ({ per_page: (prev.per_page += 12) }));
+    console.log(this.state.per_page);
+  };
+
   render() {
     return (
       <section>
@@ -58,7 +100,10 @@ export class App extends React.Component {
           <ImageGalleryItem images={this.state.images} />
         </ImageGallery>
         <Loader />
-        <Button />
+        <Button
+          onLoadMoreClick={this.handleLoadMore}
+          disabled={this.state.disabled}
+        />
         <Modal />
       </section>
     );

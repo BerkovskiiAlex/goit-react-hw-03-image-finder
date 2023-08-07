@@ -1,9 +1,7 @@
 import React from 'react';
 
-export const Button = () => {
-  return <div>Button</div>;
-};
-
+export const Button = ({ onLoadMoreClick, disabled }) =>
+  disabled ? null : <button onClick={onLoadMoreClick}>Load More</button>;
 // .Button {
 //   padding: 8px 16px;
 //   border-radius: 2px;
