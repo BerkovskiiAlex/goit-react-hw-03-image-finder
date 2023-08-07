@@ -1,19 +1,21 @@
-import React from 'react';
-
-export const ImageGalleryItem = ({ images }) => {
-  console.log(images);
+export const ImageGalleryItem = ({ images, onClick }) => {
   return (
-    <>
-      {images.map(img => (
-        <li
-          className="gallery-item"
-          key={img.id}
-          style={{ width: img.webformatWidth, height: img.webformatHeight }}
-        >
-          <img src={img.webformatURL} alt={img.largeImageURL} />
-        </li>
-      ))}
-    </>
+    <div className="image-item">
+      {images.map(
+        (
+          img,
+          index // Добавлен параметр index
+        ) => (
+          <li
+            className="gallery-item"
+            key={img.id}
+            onClick={() => onClick(index)} // Передан индекс в функцию обратного вызова onClick
+          >
+            <img src={img.webformatURL} alt={img.largeImageURL} />
+          </li>
+        )
+      )}
+    </div>
   );
 };
 

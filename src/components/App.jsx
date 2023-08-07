@@ -52,8 +52,23 @@ export class App extends React.Component {
     this.setState(prev => ({ page: prev.page + 1 }));
   };
 
+  handleImageClick = index => {
+    this.setState({ selectedImageIndex: index, modalOpen: true });
+  };
+
+  handleModalClose = () => {
+    this.setState({ selectedImageIndex: null, modalOpen: false });
+  };
+
   render() {
-    const { disabled, loading, images, totalHits } = this.state;
+    const {
+      disabled,
+      loading,
+      images,
+      totalHits,
+      modalOpen,
+      selectedImageIndex,
+    } = this.state;
     return (
       <section>
         <Searchbar onSetSearch={this.handleSetSearch} />
@@ -61,14 +76,18 @@ export class App extends React.Component {
           <Loader />
         ) : (
           <ImageGallery>
-            <ImageGalleryItem images={images} />
+            <ImageGalleryItem images={images} onClick={this.handleImageClick} />
           </ImageGallery>
         )}
 
         {totalHits === images.length ? null : (
           <Button onLoadMoreClick={this.handleLoadMore} disabled={disabled} />
         )}
-        <Modal />
+        {modalOpen && (
+          <Modal onClose={this.handleModalClose}>
+            <img src={images[selectedImageIndex].largeImageURL} alt="" />
+          </Modal>
+        )}
       </section>
     );
   }

@@ -1,18 +1,14 @@
-import { Component } from 'react';
-import { CloseButton, ModalContent, ModalWrapper } from './Modal.styled';
+import React from 'react';
 
-export class Modal extends Component {
-  timeotID = null;
-  intervalID = null;
+// Импортируйте необходимые стилизованные компоненты
+import { OverlayStyled, ModalStyled } from './Modal.styled';
 
+export class Modal extends React.Component {
   componentDidMount() {
-    //Встановлюємо слухач подій, а саме натискання клавіш
     document.addEventListener('keydown', this.handleKeyDown);
   }
 
   componentWillUnmount() {
-    console.log('Component was deleted');
-    //Видаляємо слухача
     document.removeEventListener('keydown', this.handleKeyDown);
   }
 
@@ -21,24 +17,18 @@ export class Modal extends Component {
       this.props.onClose();
     }
   };
+
   handleKeyDown = e => {
     if (e.key === 'Escape') {
-      console.log(e.key);
       this.props.onClose();
     }
   };
+
   render() {
     return (
-      <ModalWrapper onClick={this.onBackdropClick}>
-        <ModalContent>
-          <>
-            <h1>Modal</h1>
-            <hr />
-          </>
-          <CloseButton onClick={this.props.onClose}>×</CloseButton>
-          {this.props.children}
-        </ModalContent>
-      </ModalWrapper>
+      <OverlayStyled onClick={this.onBackdropClick}>
+        <ModalStyled>{this.props.children}</ModalStyled>
+      </OverlayStyled>
     );
   }
 }
