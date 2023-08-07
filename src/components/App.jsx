@@ -12,110 +12,62 @@ export class App extends React.Component {
   state = {
     q: '',
     page: 1,
-    per_page: 12,
     images: [],
     disabled: false,
     loading: false,
+    totalHits: 0,
+    selectedImageIndex: null,
+    modalOpen: false,
   };
 
-  async componentDidMount() {
-    const { q, page, per_page } = this.state;
-    try {
-      this.setState({ loading: true });
-      const data = await fetchImg({
-        q,
-        page,
-        per_page,
-      });
-      if (data.totalHits > this.state.images.length) {
-        this.setState({ disabled: false });
-      } else {
-        this.setState({ disabled: true });
-      }
-
-      console.log(this.state.disabled);
-      const { hits } = data;
-      this.setState({ images: hits });
-    } catch (error) {
-    } finally {
-      this.setState({ loading: false });
-    }
-  }
-
   async componentDidUpdate(prevProps, prevState) {
-    const { q, page, per_page } = this.state;
-    if (q === '') {
-      return;
-    }
-    if (prevState.q !== q) {
+    const { q, page } = this.state;
+    if (prevState.q !== q || prevState.page !== page) {
       try {
         this.setState({ loading: true });
-        this.setState({ per_page: 12 });
-        const data = await fetchImg({
+        const { hits, totalHits } = await fetchImg({
           q,
           page,
-          per_page,
         });
-        if (data.totalHits > this.state.images.length) {
-          this.setState({ disabled: false });
-        } else {
-          this.setState({ disabled: true });
-        }
 
-        const { hits } = data;
-        this.setState({ images: hits });
+        this.setState(prev => ({
+          images: [...prev.images, ...hits],
+          totalHits,
+        }));
       } catch (error) {
         console.log(error);
       } finally {
-        this.setState({ loading: false });
-      }
-    }
-    if (prevState.per_page !== per_page) {
-      try {
-        this.setState({ loading: true });
-        const data = await fetchImg({
-          q,
-          page,
-          per_page,
-        });
-        if (data.totalHits > this.state.images.length) {
-          this.setState({ disabled: false });
-        } else {
-          this.setState({ disabled: true });
-        }
-
-        const { hits } = data;
-        this.setState({ images: hits });
-      } catch (error) {
-        console.log(error);
-      } finally {
-        this.setState({ loading: false });
+        setTimeout(() => {
+          this.setState({ loading: false });
+        }, 1000);
       }
     }
   }
 
   handleSetSearch = query => {
-    this.setState({ q: query });
+    this.setState({ q: query, page: 1, images: [] });
   };
 
   handleLoadMore = () => {
-    this.setState(prev => ({ per_page: (prev.per_page += 12) }));
-    console.log(this.state.per_page);
+    this.setState(prev => ({ page: prev.page + 1 }));
   };
 
   render() {
-    const { disabled, loading, images } = this.state;
+    const { disabled, loading, images, totalHits } = this.state;
     return (
       <section>
         <Searchbar onSetSearch={this.handleSetSearch} />
-        {loading ? (
+        {loading && images.length === 0 ? (
           <Loader />
         ) : (
           <ImageGallery>
             <ImageGalleryItem images={images} />
           </ImageGallery>
         )}
-        <Button onLoadMoreClick={this.handleLoadMore} disabled={disabled} />
+
+        {totalHits === images.length ? null : (
+          <Button onLoadMoreClick={this.handleLoadMore} disabled={disabled} />
+        )}
         <Modal />
       </section>
     );
