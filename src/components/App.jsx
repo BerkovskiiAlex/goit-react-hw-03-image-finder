@@ -15,11 +15,13 @@ export class App extends React.Component {
     per_page: 12,
     images: [],
     disabled: false,
+    loading: false,
   };
 
   async componentDidMount() {
     const { q, page, per_page } = this.state;
     try {
+      this.setState({ loading: true });
       const data = await fetchImg({
         q,
         page,
@@ -34,7 +36,10 @@ export class App extends React.Component {
       console.log(this.state.disabled);
       const { hits } = data;
       this.setState({ images: hits });
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      this.setState({ loading: false });
+    }
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -44,6 +49,7 @@ export class App extends React.Component {
     }
     if (prevState.q !== q) {
       try {
+        this.setState({ loading: true });
         this.setState({ per_page: 12 });
         const data = await fetchImg({
           q,
@@ -60,10 +66,13 @@ export class App extends React.Component {
         this.setState({ images: hits });
       } catch (error) {
         console.log(error);
+      } finally {
+        this.setState({ loading: false });
       }
     }
     if (prevState.per_page !== per_page) {
       try {
+        this.setState({ loading: true });
         const data = await fetchImg({
           q,
           page,
@@ -79,6 +88,8 @@ export class App extends React.Component {
         this.setState({ images: hits });
       } catch (error) {
         console.log(error);
+      } finally {
+        this.setState({ loading: false });
       }
     }
   }
@@ -93,17 +104,18 @@ export class App extends React.Component {
   };
 
   render() {
+    const { disabled, loading, images } = this.state;
     return (
       <section>
         <Searchbar onSetSearch={this.handleSetSearch} />
-        <ImageGallery>
-          <ImageGalleryItem images={this.state.images} />
-        </ImageGallery>
-        <Loader />
-        <Button
-          onLoadMoreClick={this.handleLoadMore}
-          disabled={this.state.disabled}
-        />
+        {loading ? (
+          <Loader />
+        ) : (
+          <ImageGallery>
+            <ImageGalleryItem images={images} />
+          </ImageGallery>
+        )}
+        <Button onLoadMoreClick={this.handleLoadMore} disabled={disabled} />
         <Modal />
       </section>
     );

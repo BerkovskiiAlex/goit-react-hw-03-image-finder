@@ -1,7 +1,13 @@
 import React from 'react';
 
 export const Modal = () => {
-  return <div>Modal</div>;
+  return (
+    <div class="overlay">
+      <div class="modal">
+        <img src="" alt="" />
+      </div>
+    </div>
+  );
 };
 
 // .Overlay {
