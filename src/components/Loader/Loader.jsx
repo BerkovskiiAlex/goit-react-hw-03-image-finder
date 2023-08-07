@@ -1,6 +1,6 @@
 import React from 'react';
 import { RotatingLines } from 'react-loader-spinner';
-import { styled } from 'styled-components';
+import styled from 'styled-components';
 
 export const Loader = ({ height = 380, width = 380 }) => {
   return (
