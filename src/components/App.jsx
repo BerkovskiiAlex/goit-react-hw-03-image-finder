@@ -37,9 +37,7 @@ export class App extends React.Component {
       } catch (error) {
         console.log(error);
       } finally {
-        setTimeout(() => {
-          this.setState({ loading: false });
-        }, 1000);
+        this.setState({ loading: false });
       }
     }
   }
