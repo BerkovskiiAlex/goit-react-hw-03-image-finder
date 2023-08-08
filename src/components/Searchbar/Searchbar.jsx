@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+import logo from '../../images/211818_search_icon.svg';
 import {
   SearchbarStyled,
   SearchFormStyled,
@@ -18,7 +20,7 @@ export const Searchbar = ({ onSetSearch }) => {
     <SearchbarStyled>
       <SearchFormStyled onSubmit={onSubmit}>
         <SearchFormButtonStyled type="submit">
-          <SearchFormButtonLabelStyled>Search</SearchFormButtonLabelStyled>
+          <SearchFormButtonLabelStyled>{logo}</SearchFormButtonLabelStyled>
         </SearchFormButtonStyled>
 
         <SearchFormInputStyled
@@ -29,6 +31,11 @@ export const Searchbar = ({ onSetSearch }) => {
           name="query"
         />
       </SearchFormStyled>
+      {/* <div>{logo}</div> */}
     </SearchbarStyled>
   );
+};
+
+Searchbar.propTypes = {
+  onSetSearch: PropTypes.func.isRequired,
 };

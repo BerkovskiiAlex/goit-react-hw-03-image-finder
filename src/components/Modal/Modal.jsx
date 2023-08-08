@@ -1,4 +1,5 @@
 import React from 'react';
+import { PropTypes } from 'prop-types';
 
 // Импортируйте необходимые стилизованные компоненты
 import { OverlayStyled, ModalStyled } from './Modal.styled';
@@ -32,3 +33,7 @@ export class Modal extends React.Component {
     );
   }
 }
+
+Modal.propTypes = {
+  onClose: PropTypes.func,
+};
