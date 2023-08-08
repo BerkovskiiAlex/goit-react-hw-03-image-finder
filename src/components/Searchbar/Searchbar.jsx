@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import logo from '../../images/211818_search_icon.svg';
+import { ReactComponent as Icon } from '../../images/211818_search_icon.svg';
 import {
   SearchbarStyled,
   SearchFormStyled,
   SearchFormButtonStyled,
-  SearchFormButtonLabelStyled,
   SearchFormInputStyled,
 } from './Searchbar.styled';
 
@@ -13,16 +12,18 @@ export const Searchbar = ({ onSetSearch }) => {
   const onSubmit = e => {
     e.preventDefault();
     const query = e.target.query.value;
-    onSetSearch(query);
-    e.target.query.value = '';
+
+    if (e.target.query.value) {
+      onSetSearch(query);
+      e.target.query.value = '';
+    }
   };
   return (
     <SearchbarStyled>
       <SearchFormStyled onSubmit={onSubmit}>
         <SearchFormButtonStyled type="submit">
-          <SearchFormButtonLabelStyled>{logo}</SearchFormButtonLabelStyled>
+          <Icon width={30} height={30} />
         </SearchFormButtonStyled>
-
         <SearchFormInputStyled
           type="text"
           autoComplete="off"
@@ -31,7 +32,6 @@ export const Searchbar = ({ onSetSearch }) => {
           name="query"
         />
       </SearchFormStyled>
-      {/* <div>{logo}</div> */}
     </SearchbarStyled>
   );
 };
